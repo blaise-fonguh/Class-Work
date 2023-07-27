@@ -1,0 +1,81 @@
+Imports System.ComponentModel
+
+Public Class Form1
+    Dim count As Integer = 0
+    Dim TotalNum As Integer
+    Dim TotalPay As Decimal
+    Dim Average As Decimal
+    Dim totalPiece As Integer
+
+    Private Sub calBtn_Click(sender As Object, e As EventArgs) Handles calBtn.Click
+        Dim Amount As Decimal
+        Dim NumPiece As Integer
+
+        NumPiece = Integer.Parse(txtNumberOfPieces.Text, Globalization.NumberStyles.Integer)
+
+        If NumPiece = 1 And NumPiece <= 201 Then
+            Amount = NumPiece * 60
+        ElseIf NumPiece = 201 And NumPiece <= 400 Then
+            Amount = NumPiece * 65
+        ElseIf NumPiece = 401 And NumPiece <= 600 Then
+            Amount = NumPiece * 70
+        Else
+            Amount = NumPiece * 75
+
+        End If
+        txtAmountEarned.Text = Amount
+        count += 1
+        TotalPay += Amount
+        totalPiece += NumPiece
+        Average = TotalPay / count
+
+    End Sub
+    Private Sub txtnumberOfPieces_textChanged(sender As Object, e As EventArgs) Handles txtNumberOfPieces.TextChanged
+    End Sub
+
+    Private Sub ClrBtn_Click(sender As Object, e As EventArgs) Handles ClrBtn.Click
+        txtName.Clear()
+        txtNumberOfPieces.Clear()
+        txtAmountEarned.Clear()
+
+    End Sub
+
+    Private Sub SumBtn_Click(sender As Object, e As EventArgs) Handles SumBtn.Click
+        MessageBox.Show("The total number of pieces = " & totalPiece)
+        MessageBox.Show("The total pay = " & TotalPay)
+        MessageBox.Show("The average Pay Per Person = " & Average)
+    End Sub
+    Private Sub CloseBtn_Click(sender As Object, e As EventArgs) Handles CloseBtn.Click
+        Dim Bye As String
+        Bye = MessageBox.Show("Do you want to exit", "CLOSE", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        Application.ExitThread()
+
+    End Sub
+
+    Private Sub txtName_TextChanged(sender As Object, e As EventArgs) Handles txtName.TextChanged
+    End Sub
+
+    Private Sub txtName_Validating(sender As Object, e As CancelEventArgs) Handles txtName.Validating
+        If IsNumeric(txtName.Text) = True Then
+            ErrorProvider1.SetError(txtName, "This field contains Alphabets only")
+        ElseIf txtName.Text = String.Empty Then
+            ErrorProvider1.SetError(txtName, "The field cannot be Empty")
+        Else
+            ErrorProvider1.SetError(txtName, "")
+        End If
+
+    End Sub
+
+    Private Sub txtNumberOfPieces_Validating(sender As Object, e As CancelEventArgs) Handles txtNumberOfPieces.Validating
+        If Char.IsLetter(txtNumberOfPieces.Text) = True Then
+            ErrorProvider1.SetError(txtNumberOfPieces, "This field must be numbers only")
+        Else
+            ErrorProvider1.SetError(txtNumberOfPieces, "")
+        End If
+    End Sub
+
+    Private Sub txtAmountEarned_TextChanged(sender As Object, e As EventArgs) Handles txtAmountEarned.TextChanged
+
+    End Sub
+End Class
+
