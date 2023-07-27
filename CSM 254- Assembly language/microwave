@@ -1,0 +1,152 @@
+segment .data
+
+acname db "BLAISE MICROWAVE", 0XA, 0XD
+acnamelen equ $ - acname 
+
+space db "****************************", 0XA, 0XD
+spacelen equ $ - space 
+
+maximumtemp db "*Maximum temperature is : 5", 0XA, 0XD
+maximumtemplen equ $ - maximumtemp
+
+minimumtemp db "*Minimum temperature is : 1", 0XA, 0XD
+minimumtemplen equ $ - minimumtemp
+
+selectoption db "*Enter temperature: ", 0XA, 0XD
+selectoptionlen equ $ - selectoption
+
+settimer db "*Enter time in seconds:", 0XA
+settimerlen equ $ - settimer
+
+settimernano  db "*Enter time in nano seconds:", 0XA
+settimernanolen equ $ - settimernano
+
+bmessage db "Please wait food will be ready soon ", 10, 0
+bmessage1 equ $ - bmessage
+
+timeval: 
+tv_sec dd 0
+tv_usec dd 0
+
+waitmessage db "Food is ready", 
+waitmessagelen equ $ - waitmessage
+
+segment .bss
+
+select resb 2
+timeseconds resb 5
+timenano resb 5
+
+
+
+segment .text
+	global _start
+_start:
+
+;display microwave name
+mov eax, 4
+mov ebx, 1
+mov ecx, acname
+mov edx, acnamelen
+int 80h
+
+;space
+mov eax, 4
+mov ebx, 1
+mov ecx, space
+mov edx, spacelen
+int 80h
+
+;display maximum temperature
+mov eax, 4
+mov ebx, 1
+mov ecx, maximumtemp
+mov edx, maximumtemplen
+int 80h
+
+;display minimum temperature
+mov eax, 4
+mov ebx, 1
+mov ecx, minimumtemp
+mov edx, minimumtemplen
+int 80h
+
+
+;display select temperature prompt
+mov eax, 4
+mov ebx, 1
+mov ecx, selectoption
+mov edx, selectoptionlen
+int 80h
+
+; store temperature prompt 
+mov eax, 3
+mov ebx, 0
+mov ecx, select
+mov edx, 2
+int 80h
+
+;display select time prompt in seconds
+mov eax, 4
+mov ebx, 0
+mov ecx, settimer
+mov edx, settimerlen
+int 80h
+
+;store time entered by user prompt  in seconds
+mov eax, 3
+mov ebx, 0
+mov ecx, timeseconds
+mov edx, 5
+int 80h
+
+;display select time prompt in seconds
+mov eax, 4
+mov ebx, 1
+mov ecx, settimernano
+mov edx, settimernanolen
+int 80h
+
+;store time entered by user prompt  in nanoseconds
+mov eax, 3
+mov ebx, 0
+mov ecx, timenano
+mov edx, 5
+int 80h
+
+; print wait
+
+mov eax, 4
+mov ebx, 1
+mov ecx, bmessage
+mov edx, bmessage1
+int 80h
+
+
+
+mov dword[tv_sec], timeseconds
+mov dword[tv_usec], timenano
+mov eax, 162
+mov ebx, timeval
+mov ecx, 0
+int 80h
+
+
+
+;Food is Ready message
+mov eax, 4
+mov ebx, 1
+mov ecx, waitmessage
+mov edx, waitmessagelen
+int 80h
+
+;end the program
+mov eax, 1
+mov ebx, 0
+int 80h
+
+
+
+
+
+

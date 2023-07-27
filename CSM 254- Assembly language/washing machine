@@ -1,0 +1,260 @@
+segment .data
+
+washname db "BLAISE WASHING MACHINE", 0XA, 0XD
+washnamelen equ $ - washname
+
+space db "****************************", 0XA, 0XD
+spacelen equ $ - space 
+
+modemg db "*select the mode", 0XA, 0XD
+modemglen equ $ - modemg
+
+space2 db "****************************", 0XA, 0XD
+spacelen2 equ $ - space2 
+
+automg db "*Enter 1 for Automatic mode", 0XA, 0XD
+automglen equ $ - automg
+
+manualmg db "*Enter 2 for Manual mode", 0XA, 0XD
+manualmglen equ $ - manualmg
+
+exitmg db "*Enter 3 to exit", 0XA, 0XD
+exitmglen equ $ - exitmg
+
+
+selectmg db "*select mode:", 0XA
+selectmglen equ $ - selectmg
+
+waterlevel db "*Enter the water level: ", 0XA, 0XD
+waterlen equ $ - waterlevel
+
+
+watertemp db "*Enter the water temperature: ", 0XA, 0XD
+templen equ $ - watertemp
+
+
+settimer  db "*Enter time in  seconds: ", 0XA,0XD
+settimernanolen equ $ - settimer
+
+settimernano  db "*Enter time in nano seconds: ", 0XA,0XD
+settimerlen equ $ - settimernano
+
+waitmg db "Please wait  ", 0XA,0XD
+waitmglen equ $ - waitmg
+
+timeval: 
+tv_sec dd 0
+tv_usec dd 0
+
+donemg db "Am tired of washing  ", 0XA,0XD
+donemglen equ $ - donemg
+
+
+
+segment .bss
+choice resb 2
+wlevel resb 10
+wtemp resb 10
+wtime resb 10
+timenano resb 2
+timeseconds resb 2
+
+segment .text
+global _start
+_start:
+
+;display washing machine name
+mov eax, 4
+mov ebx, 1
+mov ecx, washname
+mov edx, washnamelen
+int 80h
+
+
+
+;display space 
+mov eax, 4
+mov ebx, 1
+mov ecx, space
+mov edx, spacelen
+int 80h
+
+;display mode message
+mov eax, 4
+mov ebx, 1
+mov ecx, modemg
+mov edx, modemglen
+int 80h
+
+;display space 
+mov eax, 4
+mov ebx, 1
+mov ecx, space2
+mov edx, spacelen2
+int 80h
+
+;display automatic mode 
+mov eax, 4
+mov ebx, 1
+mov ecx, automg
+mov edx, automglen
+int 80h
+
+;display manual mode 
+mov eax, 4
+mov ebx, 1
+mov ecx, manualmg
+mov edx, manualmglen
+int 80h
+
+;display exit
+mov eax, 4
+mov ebx, 1
+mov ecx, exitmg
+mov edx, exitmglen
+int 80h
+
+;prompt to receive users choice 
+mov eax, 4
+mov ebx, 1
+mov ecx, selectmg
+mov edx, selectmglen
+int 80h
+
+;store user's choice 
+mov eax, 3
+mov ebx, 2
+mov ecx, choice
+mov edx, 2
+int 80h
+
+;move the selected option to registry 
+
+mov ah, [choice]
+
+;convert from ascii to decimal 
+sub ah, '0'
+
+;compare the value entered by the user to the operation to perform 
+
+cmp ah, 1
+jmp Automatic 
+
+cmp ah, 2
+jmp Manual
+
+cmp ah, 3
+jmp Exit
+
+Automatic:
+mov eax, 4
+mov ebx, 1
+mov ecx, waitmg
+mov edx, waitmglen
+int 80h
+
+
+mov dword[tv_sec], 8
+mov dword[tv_usec], 9
+mov eax, 162
+mov ebx, timeval
+mov ecx, 0
+int 80h
+
+
+;Done washing
+mov eax, 4
+mov ebx, 1
+mov ecx, donemg
+mov edx, donemglen
+int 80h
+
+jmp Exit
+
+
+Manual: 
+
+; display prompt to enter water level
+mov eax, 4
+mov ebx, 1
+mov ecx, waterlevel
+mov edx, waterlen
+int 80h
+
+; store water level
+mov eax, 3
+mov ebx, 2
+mov ecx, wlevel
+mov edx, 10
+int 80h
+
+
+; display prompt to enter water temperature
+mov eax, 4
+mov ebx, 1
+mov ecx, watertemp
+mov edx, templen
+int 80h
+
+; store water temperature
+mov eax, 3
+mov ebx, 2
+mov ecx, wtemp
+mov edx, 10
+int 80h
+
+
+;display select time prompt in seconds
+mov eax, 4
+mov ebx, 1
+mov ecx, settimer
+mov edx, settimerlen
+int 80h
+
+;store time entered by user prompt  in seconds
+mov eax, 3
+mov ebx, 2
+mov ecx, timeseconds
+mov edx, 2
+int 80h
+
+;display select time prompt in seconds
+mov eax, 4
+mov ebx, 1
+mov ecx, settimernano
+mov edx, settimernanolen
+int 80h
+
+;store time entered by user prompt  in nanoseconds
+mov eax, 3
+mov ebx, 2
+mov ecx, timenano
+mov edx, 2
+int 80h
+
+mov eax, 4
+mov ebx, 1
+mov ecx, waitmg
+mov edx, waitmglen
+int 80h
+
+
+mov dword[tv_sec], 5
+mov dword[tv_usec], 0
+mov eax, 162
+mov ebx, timeval
+mov ecx, 0
+int 80h
+
+;Done washing
+mov eax, 4
+mov ebx, 1
+mov ecx, donemg
+mov edx, donemglen
+int 80h
+jmp Exit
+
+Exit:
+mov eax, 1
+mov ebx, 0
+int 80h

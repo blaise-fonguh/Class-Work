@@ -1,0 +1,13 @@
+/*
+primary Font: Lato
+secondary Font: Roboto Condensed
+
+Dark Blue -rgb(70, 137, 244)
+Light Blue - rgb(196, 212,255)
+*/
+
+#main{
+    display: grid;
+    grid-template-columns: 70px 30px;
+    grid-gap: 50px;
+}

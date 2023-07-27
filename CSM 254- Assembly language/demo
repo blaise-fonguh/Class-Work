@@ -1,0 +1,10 @@
+global  _main
+            extern -printf
+            section .text
+      _main:
+                push  message
+                call    _printf
+                add     esp, 4
+                ret
+            message:
+                db       'Hello World from Dr. Blaise', 0
