@@ -1,0 +1,63 @@
+Public Class Form1
+    Public tot As Double
+    Public c As Integer = totalamt
+    Const VHSPrice As Decimal = 10
+    Const VHSNewReleasePrice As Decimal = 18
+    Const DVDPrice As Decimal = 15
+    Const DVDNewReleasePrice As Decimal = 12
+    Public numberofcustomers As Integer
+    Public totalamt As Decimal = 0.0
+    Public Property PrintForm1 As Object
+    Private Property Rate As Decimal
+    Private Sub btnCalculate_Click(senderAsObject, eAsEventArgs) Handles btnCalculate.Click
+        Dim Rate As Decimal
+        Dim Discount As Decimal = 0.1
+        If txtMovieTitle.Text.Length > 0 Then
+            If rbVHS.Checked Then
+                If chkNewRelease.Checked Then
+                    Rate = VHSNewReleasePrice
+                Else : Rate = VHSPrice
+                End If
+            Else : If chkNewRelease.Checked Then
+                    Rate = DVDNewReleasePrice
+                Else : Rate = DVDPrice
+                End If
+            End If
+            If chkMember.Checked Then Rate = (Discount * Rate)
+        End If
+        'calculatetotalsforallcustomers
+        numberofcustomers = numberofcustomers + 1
+        totalamt = Rate + totalamt
+        Else : MessageBox.Show("Error;youmustselectVHSorDVD", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End If
+        If txtMovieTitle.Text = "" Then
+            MessageBox.Show("Error;pleaseentermovietitle", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End If
+        MsgBox("RentalAmount: " & FormatCurrency(totalamt))
+    End Sub
+    Private Sub btnClearforNextItem_Click(senderAsObject, eAsEventArgs) Handles btnClearForNextItem.Click
+        txtMovieTitle.Text = ""
+        rbVHS.Checked = False
+        rbDVD.Checked = False
+        chkNewRelease.Checked = False
+    End Sub
+    Private Sub btnOrderComplete_Click(senderAsObject, eAsEventArgs) Handles btnOrderComplete.Click
+        Dim reply As DialogResult = MessageBox.Show("Doyouwanttocompletetheorder?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        txtMovieTitle.Text = ""
+        rbVHS.Checked = False
+        rbDVD.Checked = False
+        chkNewRelease.Checked = False
+        chkMember.Checked = False
+        c = c + 1
+    End Sub
+    Private Sub btnSummary_Click(senderAsObject, eAsEventArgs) Handles btnSummary.Click
+        'calculatetotalrentalamountsforallcustomers
+        MsgBox("TotalCustomers:" & c & ",TotalAmount:" & FormatCurrency(totalamt, 2))
+    End Sub
+    Private Sub btnPrint_Click(senderAsObject, eAsEventArgs) Handles btnPrint.Click
+        'Printtheform. PrintForm1.Print()
+    End Sub
+    Private Sub btnExit_Click(senderAsObject, eAsEventArgs) Handles btnExit.Click
+        Me.Close()
+    End Sub
+End Class

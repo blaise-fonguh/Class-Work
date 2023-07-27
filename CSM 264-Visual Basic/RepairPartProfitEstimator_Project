@@ -1,0 +1,193 @@
+Option Strict On 
+Imports System.ComponentModel 
+ 
+Public Class Form1 
+    'Declare module-level variables and constants 
+    Private TotalQuantityInteger As Integer 
+    Private TotalNetProfitDecimal As Decimal 
+ 	
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles ExitButton.Click         Me.Close() 
+    End Sub 
+ 
+    Private Sub ComputeButton_Click(sender As Object, e As EventArgs) Handles 
+ComputeButton.Click 
+        Try 
+            'Declare Constants 
+            ' Storage Charge  of 5% 
+            Const STORAGE_CHARGE_SINGLE As Single = 0.05F  
+            'Declare Variables 
+            Dim RetailPriceDecimal As Decimal 
+            Dim WholeSaleCostDecimal As Decimal 
+            Dim QuantityInteger As Integer 
+            Dim GrossProfitDecimal As Decimal 
+            Dim StorageChargeDecimal As Decimal 
+            Dim NetProfitDecimal As Decimal  
+            'Convert values from TextBox Controls to memory 
+            RetailPriceDecimal = Decimal.Parse(RetailTextBox.Text, 
+Globalization.NumberStyles.Currency) 
+            QuantityInteger = Integer.Parse(QuantityTextBox.Text, 
+Globalization.NumberStyles.Number) 
+            WholeSaleCostDecimal = Decimal.Parse(WholeSaleCostTextBox.Text, 
+Globalization.NumberStyles.Currency) 
+ 
+            'Process - Compute the  values entered into the textbox 
+ 
+            'GrossProfit  = QuantityInteger times the difference between retailprice and wholesale price 
+            GrossProfitDecimal = Decimal.Round(Convert.ToDecimal(QuantityInteger * 
+(RetailPriceDecimal - WholeSaleCostDecimal)), 2) 
+ 
+            'Storage Charges = 5% times the Gross Profit  
+            StorageChargeDecimal = Decimal.Round(Convert.ToDecimal(STORAGE_CHARGE_SINGLE 
+* GrossProfitDecimal), 2) 
+ 
+            'Net Profit = Gross Profit minus Total charges  
+            NetProfitDecimal = GrossProfitDecimal - StorageChargeDecimal  
+            'Display output formatted as currency 
+            GrossProfitTextBox.Text = GrossProfitDecimal.ToString("N2") 
+            StorageChargesTextBox.Text = StorageChargeDecimal.ToString("N2") 
+            NetProfitTextBox.Text = NetProfitDecimal.ToString("C2") 
+ 
+ 
+            'Disable the Compute button and enable the Reset Form button 
+            ComputeButton.Enabled = False 
+            ResetButton.Enabled = True 
+ 
+            'Accumulate total quantity returned And net to customer  
+            TotalQuantityInteger += QuantityInteger 
+            TotalNetProfitDecimal += NetProfitDecimal 
+        Catch ex As Exception 
+            MessageBox.Show("Error in Retail Price, Quantiy or Whole Sale Price", "Data Entry Error", MessageBoxButtons.OK, MessageBoxIcon.Error) 
+        End Try 
+ 
+    End Sub 
+ 
+    Private Sub RetailTextBox_TextChanged(sender As Object, e As EventArgs) Handles 
+RetailTextBox.TextChanged 
+ 
+    End Sub 
+ 
+    Private Sub ResetButton_Click(sender As Object, e As EventArgs) Handles 
+ResetButton.Click 
+        'The Button starts up disabled. 
+ 
+        'Clear all data input And output controls. 
+        PartIdentifierTextBox.Clear() 
+        PartDescriptionTextBox.Clear() 
+        RetailTextBox.Clear() 
+        WholeSaleCostTextBox.Clear() 
+        QuantityTextBox.Clear() 
+        GrossProfitTextBox.Clear() 
+        NetProfitTextBox.Clear() 
+        StorageChargesTextBox.Clear() 
+ 
+ 
+        'Enable the Compute button And disable the Reset Form Button. 
+        ComputeButton.Enabled = True 
+        ResetButton.Enabled = False 
+ 
+        'Set focus to the Item Identifier TextBox control. 
+        PartIdentifierTextBox.Focus() 
+    End Sub 
+ 
+    Private Sub TotalNetProfitButton_Click(sender As Object, e As EventArgs) Handles TotalNetProfitButton.Click 
+        Try 
+            'display a message box to show the following information 
+            'the net profit,  
+            'total quantity of items,  
+            'And average value of the net profit.  
+ 
+            Dim AverageNetProfitsDecimal As Decimal = TotalNetProfitDecimal / 
+TotalQuantityInteger 
+ 
+            Dim MessageString As String = "Total Net Profit: " & 
+TotalNetProfitDecimal.ToString("C2") & 
+                ControlChars.NewLine & "Total Quantity Of Parts: " & 
+TotalQuantityInteger.ToString("N0") & 
+                ControlChars.NewLine & "Average Net Profit: " & 
+AverageNetProfitsDecimal.ToString("C2") 
+ 
+            MessageBox.Show(MessageString, "Totals and Averages", MessageBoxButtons.OK, 
+MessageBoxIcon.Information) 
+ 
+ 
+        Catch exArithmeticException As ArithmeticException 
+            MessageBox.Show("No Parts Estimate made yet", "Zero Items Message ", 
+MessageBoxButtons.OK, MessageBoxIcon.Information) 
+        Catch ex As Exception 
+            MessageBox.Show("Unexpected Error-inform the system administrator", "Unknown Error in Totals Button", MessageBoxButtons.OK, MessageBoxIcon.Error) 
+        End Try 
+ 
+    End Sub 
+ 
+    Private Sub PartIdentifierTextBox_TextChanged(sender As Object, e As EventArgs) 
+Handles PartIdentifierTextBox.TextChanged  
+    End Sub 
+ 
+    Private Sub PartIdentifierTextBox_Validating(sender As Object, e As CancelEventArgs) Handles PartIdentifierTextBox.Validating 
+        If PartIdentifierTextBox.Text = String.Empty Then 
+            e.Cancel = True 
+            ErrorProvider1.SetError(PartIdentifierTextBox, "Part Identifier is required")         Else 
+            ErrorProvider1.SetError(PartIdentifierTextBox, "")         End If 
+    End Sub 
+ 
+    Private Sub PartDescriptionTextBox_Validating(sender As Object, e As CancelEventArgs) 
+Handles PartDescriptionTextBox.Validating 
+        If PartDescriptionTextBox.Text = String.Empty Then 
+            e.Cancel = True 
+            ErrorProvider1.SetError(PartDescriptionTextBox, "Part description is required")         Else 
+            ErrorProvider1.SetError(PartDescriptionTextBox, "") 
+        End If 
+    End Sub 
+ 
+    Private Sub RetailTextBox_Validating(sender As Object, e As CancelEventArgs) Handles 
+RetailTextBox.Validating 
+        If IsNumeric(RetailTextBox.Text) = False OrElse 
+                Decimal.Parse(RetailTextBox.Text, Globalization.NumberStyles.Currency) <= 
+0D Then 
+            e.Cancel = True 
+            ErrorProvider1.SetError(RetailTextBox, "Retail must be between 0 and infinity ") 
+            RetailTextBox.SelectAll() 
+ 
+        Else 
+            ErrorProvider1.SetError(RetailTextBox, "") 
+        End If 
+    End Sub 
+ 
+    Private Sub QuantityTextBox_Validating(sender As Object, e As CancelEventArgs) 
+Handles QuantityTextBox.Validating 
+        If IsNumeric(QuantityTextBox.Text) = False OrElse 
+              Integer.Parse(QuantityTextBox.Text, Globalization.NumberStyles.Number) <= 
+0D Then 
+            e.Cancel = True 
+            ErrorProvider1.SetError(QuantityTextBox, "quantity must be a number greater than zero ") 
+            WholeSaleCostTextBox.SelectAll() 
+ 
+        Else 
+            ErrorProvider1.SetError(QuantityTextBox, "") 
+        End If 
+ 
+    End Sub 
+ 
+    Private Sub QuantityTextBox_TextChanged(sender As Object, e As EventArgs) Handles 
+QuantityTextBox.TextChanged 
+ 
+    End Sub 
+ 
+    Private Sub WholeSaleCostTextBox_Validating(sender As Object, e As CancelEventArgs) Handles WholeSaleCostTextBox.Validating 
+        If IsNumeric(WholeSaleCostTextBox.Text) = False OrElse 
+              Decimal.Parse(WholeSaleCostTextBox.Text, Globalization.NumberStyles.Currency) <= 0D Then 
+            e.Cancel = True 
+            ErrorProvider1.SetError(RetailTextBox, "wholesale must be between 0 and infinity ") 
+            WholeSaleCostTextBox.SelectAll() 
+ 
+        Else 
+            ErrorProvider1.SetError(WholeSaleCostTextBox, "") 
+        End If 
+    End Sub 
+ 
+    Private Sub Form1_Validating(sender As Object, e As CancelEventArgs) Handles 
+Me.Validating 
+        e.Cancel = False 
+    End Sub 
+End Class 
+ 

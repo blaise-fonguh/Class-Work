@@ -1,0 +1,288 @@
+Option Strict On 
+ 
+Imports System.ComponentModel 
+ 
+Public Class Form1 
+ 
+    Private GRAND_TOTAL_DISCOUNT_DECIMAL As Decimal 
+    Private COMPUTE_CLICKED_COUNTS As Integer 
+ 
+ 
+    Private Sub ComuteButton_Click(sender As Object, e As EventArgs) Handles ComuteButton.Click, 
+ComputeToolStripMenuItem.Click 
+ 
+        Try 
+            'Declare variabales  
+            Dim Purchase_Price_Decimal As Decimal 
+            Dim Quantity_Purchased_Integer As Integer 
+            Dim Shipping_Cost_Decimal As Decimal 
+            Dim total_Cost_of_Extras_Decimal As Decimal 
+            Dim SubTotal_Decimal As Decimal 
+            Dim sales_Tax_Decimal As Decimal 
+            Dim Total_Due_Decimal As Decimal 
+            Dim DISCOUNT_DECIMAL As Decimal 
+ 
+            'Declare Shipment Mode Constants  
+            Const FED_EX_AIR_DECIMAL As Decimal = 25D 
+            Const FED_EX_GROUND_DECIMAL As Decimal = 20D 
+            Const US_POSTAL_DECIMAL As Decimal = 12D 
+'Declare Extras Constants  
+            Const ONE_YEAR_WARRANTY_DECIMAL As Decimal = 75D 
+            Const CLUB_MEMBERSHIP_DECIMAL As Decimal = 150D 
+            Const TIRE_SALE_COUPON_DECIMAL As Decimal = 25D 
+ 
+ 
+            'OTHER CONSTANTS  
+            Const DISCOUNT_RATE_DECIMAL As Decimal = 0.1D 
+            Const SALES_TAX_RATE_DECIMAL As Decimal = 0.05D 
+ 
+            'Receive user Inputs from TextBox  
+            Purchase_Price_Decimal = Decimal.Parse(PurchasePriceTextBox.Text, Globalization.NumberStyles.Currency) 
+            Quantity_Purchased_Integer = Integer.Parse(QuantityPurchasedTextBox.Text, Globalization.NumberStyles.Number) 
+ 
+            'COMPUTE SHIPPING COST  
+            'SHIPPING COST IS SHIPMENT MODE SELECTED TIMES THE QUANTITY PURCHASED  
+ 
+            If FedExAirRadioButton.Checked Then 
+                Shipping_Cost_Decimal = Decimal.Round((Quantity_Purchased_Integer * 
+FED_EX_AIR_DECIMAL), 2) 
+            ElseIf FedExGroundRadioButton.Checked Then 
+                Shipping_Cost_Decimal = Decimal.Round((Quantity_Purchased_Integer * 
+FED_EX_GROUND_DECIMAL), 2) 
+            ElseIf USPOSTALRadioButton.Checked Then 
+                Shipping_Cost_Decimal = Decimal.Round((Quantity_Purchased_Integer * 
+US_POSTAL_DECIMAL), 2) 
+            End If 
+ 
+            'COMPUTE THE TOTAL COST OF EXTRAS, IF A CHECKBOX IS SELECTED,              'THE AMOUNT SHOULD BE ADDED TO THE TOTAL COST OF EXTRAS 
+ 
+ 
+            If OneYearWarantyCheckBox.Checked Then                 total_Cost_of_Extras_Decimal += ONE_YEAR_WARRANTY_DECIMAL 
+            End If 
+ 
+            If ClubMemberShipCheckBox.Checked Then                 total_Cost_of_Extras_Decimal += CLUB_MEMBERSHIP_DECIMAL 
+            End If 
+ 
+            If TireSaleCheckBox.Checked Then                 total_Cost_of_Extras_Decimal += TIRE_SALE_COUPON_DECIMAL 
+            End If 
+ 
+            'COMPUTE FOR DISCOUNT, WHOLESALE DISCOUNT IS 10% AND RETAIL IS ZERO 
+            If WholesaleRadioButton.Checked Then 
+                DISCOUNT_DECIMAL = Decimal.Round((Purchase_Price_Decimal * Quantity_Purchased_Integer * DISCOUNT_RATE_DECIMAL), 2) 
+            Else 
+                DISCOUNT_DECIMAL = 0.00D 
+            End If 
+ 
+            'COMPUTE FOR SUBTOTAL WHICH IS PURCHASE PRICE TIMES QUANTITY PLUS SHIPPING COST PLUS COST OF EXTRAS MINUS DISCOUNT 
+            SubTotal_Decimal = Decimal.Round((((Purchase_Price_Decimal * Quantity_Purchased_Integer) + 
+Shipping_Cost_Decimal + total_Cost_of_Extras_Decimal) - DISCOUNT_DECIMAL), 2) 
+'COMPUTE FOR RETAIL, Retail costomers pay 5% sales tax on subtotal whereas wholesale pay nothing  
+            If RetailRadioButton.Checked Then                 sales_Tax_Decimal = Decimal.Round((SubTotal_Decimal * SALES_TAX_RATE_DECIMAL), 2) 
+            Else 
+                sales_Tax_Decimal = 0.00D 
+            End If 
+ 
+ 
+ 
+            'COMPUTE TOTAL DUE IS SUBTOTAL MINUS SALES TAX  
+            Total_Due_Decimal = SubTotal_Decimal - sales_Tax_Decimal 
+ 
+            'OUTPUT The result   
+ 
+            TotaldueTextBox.Text = Total_Due_Decimal.ToString("C2") 
+            SalesTaxTextBox.Text = sales_Tax_Decimal.ToString("N2") 
+            SubTotalTextBox.Text = SubTotal_Decimal.ToString("N2") 
+            DiscountTextBox.Text = DISCOUNT_DECIMAL.ToString("N2") 
+            CostOfExtrasTextBox.Text = total_Cost_of_Extras_Decimal.ToString("N2") 
+            ShippingCostTextBox.Text = Shipping_Cost_Decimal.ToString("N2") 
+ 
+ 
+            'GRAND TOTAL OF DISCOUNTS 
+            GRAND_TOTAL_DISCOUNT_DECIMAL += DISCOUNT_DECIMAL 
+ 
+ 
+            'TOTAL COUNTS OF WHOLE SALE  QUANTITY  PURCHASED  
+ 
+            If WholesaleRadioButton.Checked Then 
+ 
+                COMPUTE_CLICKED_COUNTS += 1 
+ 
+            End If 
+ 
+ 
+        Catch ex As Exception 
+            MessageBox.Show("Error in either Purchase Price or Quantity Purchased", "Data Entry Error", 
+MessageBoxButtons.OK, MessageBoxIcon.Error) 
+        End Try 
+ 
+    End Sub 
+ 
+    Private Sub TotalsButton_Click(sender As Object, e As EventArgs) Handles TotalsButton.Click, 
+TotalCountsAndAverageToolStripMenuItem.Click 
+        Try 
+            'Display the grandTotal ( total of all total dues) 
+            'and a count of the number of vehicles sold  
+ 
+            Dim AVERAGE_DISCOUNTS As Decimal = Decimal.Round((GRAND_TOTAL_DISCOUNT_DECIMAL / COMPUTE_CLICKED_COUNTS), 2) 
+ 
+            Dim MessageString As String = "Total Wholesale Discounts: " & GRAND_TOTAL_DISCOUNT_DECIMAL.ToString("C2") _ 
+                & ControlChars.NewLine & "Total Wholesale Quantity: " & COMPUTE_CLICKED_COUNTS.ToString("N0") _ 
+                & ControlChars.NewLine & "Average Discount Amount: " & 
+AVERAGE_DISCOUNTS.ToString("C2") 
+MessageBox.Show(MessageString, "Totals, Counts and Averages", MessageBoxButtons.OK, MessageBoxIcon.Information) 
+ 
+        Catch exArithmeticException As ArithmeticException 
+            MessageBox.Show("No products have been sold yet", "Zero Sales Message ", 
+MessageBoxButtons.OK, MessageBoxIcon.Information) 
+ 
+        Catch ex As Exception 
+            MessageBox.Show("Please contact your administrator" & ControlChars.NewLine & ex.Message, 
+"Unknown Error", MessageBoxButtons.OK, MessageBoxIcon.Error) 
+ 
+        End Try 
+    End Sub 
+ 
+    Private Sub ResetButton_Click(sender As Object, e As EventArgs) Handles ResetButton.Click, ResetToolStripMenuItem.Click 
+        'clear all input and output data and uncheck all checkboxes 
+        CustomerNameTextBox.Clear() 
+        ShippingAddressTextBox.Clear() 
+        TelephoneMaskedTextBox.Clear() 
+        ProductIdentifierTextBox.Clear() 
+        PurchasePriceTextBox.Clear() 
+        QuantityPurchasedTextBox.Clear() 
+        ShippingCostTextBox.Clear() 
+        CostOfExtrasTextBox.Clear() 
+        DiscountTextBox.Clear() 
+        SubTotalTextBox.Clear() 
+        SalesTaxTextBox.Clear() 
+        TotaldueTextBox.Clear() 
+        WholesaleRadioButton.Checked = True 
+        RetailRadioButton.Checked = False 
+        FedExAirRadioButton.Checked = True 
+        FedExGroundRadioButton.Checked = False 
+        USPOSTALRadioButton.Checked = False 
+        OneYearWarantyCheckBox.Checked = False 
+        ClubMemberShipCheckBox.Checked = False 
+        TireSaleCheckBox.Checked = False 
+        CustomerNameTextBox.Focus() 
+    End Sub 
+ 
+ 
+ 
+    Private Sub ExitButton_Click(sender As Object, e As EventArgs) Handles ExitButton.Click 
+ 
+        Dim messagedisplaystring As String = "Do you want to close the form" 
+        Dim buttondialogueresult As DialogResult = MessageBox.Show(messagedisplaystring, "Quit", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) 
+        If buttondialogueresult = DialogResult.Yes Then 
+            Me.Close() 
+        End If 
+    End Sub 
+ 
+    Private Sub CustomerNameTextBox_Validating(sender As Object, e As CancelEventArgs) Handles 
+CustomerNameTextBox.Validating 
+ 
+        If CustomerNameTextBox.Text = String.Empty Then 
+            e.Cancel = True 
+            ErrorProvider1.SetError(CustomerNameTextBox, "Please it cannot be empty")             CustomerNameTextBox.SelectAll() 
+        Else 
+            ErrorProvider1.SetError(CustomerNameTextBox, "") 
+ 
+        End If 
+    End Sub 
+ 
+ 
+    Private Sub ShippingAddressTextBox_Validating(sender As Object, e As CancelEventArgs) Handles ShippingAddressTextBox.Validating 
+        If ShippingAddressTextBox.Text = String.Empty Then 
+            e.Cancel = True 
+            ErrorProvider1.SetError(ShippingAddressTextBox, "Please it cannot be empty") 
+        Else 
+            ErrorProvider1.SetError(ShippingAddressTextBox, "") 
+        End If 
+    End Sub 
+ 
+    Private Sub ProductIdentifierTextBox_Validating(sender As Object, e As CancelEventArgs) Handles ProductIdentifierTextBox.Validating 
+ 
+        If IsNumeric(ProductIdentifierTextBox.Text) = False OrElse 
+Decimal.Parse(ProductIdentifierTextBox.Text, Globalization.NumberStyles.Currency) <= 0D Then             e.Cancel = True 
+            ErrorProvider1.SetError(ProductIdentifierTextBox, "Please price must be greater than zero") 
+        Else 
+            ErrorProvider1.SetError(ProductIdentifierTextBox, "") 
+        End If 
+ 
+ 
+    End Sub 
+ 
+    Private Sub TradeinTextBox_Validating(sender As Object, e As CancelEventArgs) Handles SubTotalTextBox.Validating 
+        If IsNumeric(SubTotalTextBox.Text) = False OrElse Decimal.Parse(SubTotalTextBox.Text, Globalization.NumberStyles.Currency) < 0D Then 
+            e.Cancel = True 
+            ErrorProvider1.SetError(SubTotalTextBox, "Please Trade In  must be zero or more") 
+        Else 
+            ErrorProvider1.SetError(SubTotalTextBox, "") 
+        End If 
+ 
+    End Sub 
+ 
+ 
+    Private Sub TelephoneMaskedTextBox_Validating(sender As Object, e As CancelEventArgs) Handles TelephoneMaskedTextBox.Validating 
+        If TelephoneMaskedTextBox.Text = String.Empty Then 
+            e.Cancel = True 
+            ErrorProvider1.SetError(TelephoneMaskedTextBox, "Please it cannot be empty") 
+        Else 
+            ErrorProvider1.SetError(TelephoneMaskedTextBox, "") 
+        End If 
+    End Sub 
+ 
+    Private Sub PurchasePriceTextBox_Validating(sender As Object, e As CancelEventArgs) Handles PurchasePriceTextBox.Validating 
+        If IsNumeric(PurchasePriceTextBox.Text) = False OrElse Decimal.Parse(PurchasePriceTextBox.Text, 
+Globalization.NumberStyles.Currency) < 0D Then 
+            e.Cancel = True 
+            ErrorProvider1.SetError(PurchasePriceTextBox, "Please Purchase Price should be greater than zero") 
+        Else 
+            ErrorProvider1.SetError(PurchasePriceTextBox, "") 
+        End If 
+    End Sub 
+ 
+    Private Sub QuantityPurchasedTextBox_Validating(sender As Object, e As CancelEventArgs) Handles QuantityPurchasedTextBox.Validating 
+        If IsNumeric(QuantityPurchasedTextBox.Text) = False OrElse 
+Integer.Parse(QuantityPurchasedTextBox.Text, Globalization.NumberStyles.Number) < 0D Then             e.Cancel = True 
+            ErrorProvider1.SetError(QuantityPurchasedTextBox, "Please Purchase Price should be greater than zero") 
+        Else 
+            ErrorProvider1.SetError(QuantityPurchasedTextBox, "") 
+        End If 
+    End Sub 
+ 
+ 
+    Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles 
+Me.FormClosing 
+        e.Cancel = False 
+    End Sub 
+ 
+ 
+    Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click 
+        ExitButton.PerformClick() 
+ 
+    End Sub 
+ 
+    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click 
+        Dim messagestring As String = "Programmed by Tayubah Evans" & ControlChars.NewLine & "Today's Date/Date: " & Date.Now.ToString 
+        Dim titlestring As String = "About Edwards Ville Auto Store" 
+        'Display the message 
+        MessageBox.Show(messagestring, titlestring, MessageBoxButtons.OK, MessageBoxIcon.Information) 
+    End Sub 
+ 
+    Private Sub ColorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ColorToolStripMenuItem.Click 
+        ColorDialog1.Color = Me.BackColor         ColorDialog1.ShowDialog() 
+        Me.BackColor = ColorDialog1.Color 
+        MenuStrip1.BackColor = ColorDialog1.Color 
+ 
+    End Sub 
+ 
+    Private Sub FontToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 
+FontToolStripMenuItem.Click 
+        FontDialog1.Font = Me.Font 
+        FontDialog1.ShowDialog() 
+        Me.Font = FontDialog1.Font 
+        MenuStrip1.Font = FontDialog1.Font 
+ 
+    End Sub 
+End Class 

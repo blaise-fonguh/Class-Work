@@ -1,0 +1,38 @@
+ 
+Public Class Student 
+    Private Sub Label2_Click(sender As Object, e As EventArgs) Handles Label2.Click  
+    End Sub 
+ 
+    Private Sub ExitButton_Click(sender As Object, e As EventArgs) Handles 
+ExitButton.Click 
+        Me.Close() 
+    End Sub 
+ 
+    Private Sub Display1Button_Click(sender As Object, e As EventArgs) Handles Display1Button.Click 
+        NameTextBox.Text = "Tayubah Evans" 
+        MajorTextBox.Text = "Bsc. Computer Science" 
+    End Sub 
+ 
+    Private Sub Display2Button_Click(sender As Object, e As EventArgs) Handles Display2Button.Click 
+        NameTextBox.Text = "Maame Pokua" 
+        MajorTextBox.Text = "Bsc. SnapChat Science" 
+    End Sub 
+ 
+    Private Sub Display3Button_Click(sender As Object, e As EventArgs) Handles Display3Button.Click 
+        NameTextBox.Text = "Emmanuella Sangmuah" 
+        MajorTextBox.Text = "Bsc. Cameralogy Science" 
+    End Sub 
+ 
+    Private Sub ResetButton_Click(sender As Object, e As EventArgs) Handles 
+ResetButton.Click 
+        NameTextBox.Clear() 
+        MajorTextBox.Clear() 
+    End Sub 
+ 
+    Private Sub PrintButton_Click(sender As Object, e As EventArgs) Handles 
+PrintButton.Click 
+     PrintDocument1.Print() 
+ 
+    End Sub 
+ 
+End Class 
