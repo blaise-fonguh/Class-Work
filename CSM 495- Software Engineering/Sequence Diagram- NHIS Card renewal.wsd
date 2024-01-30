@@ -1,0 +1,32 @@
+@startuml
+actor User
+participant System
+participant PaymentGateway
+
+User -> System: Enter code to begin process
+System --> User: Validate code
+
+User -> System: Select transaction option (Renew Membership)
+System --> User: Validate selected option
+
+User -> System: Enter NHIS Membership number
+System --> User: Validate NHIS Membership number
+User -> System: Confirm NHIS Membership number
+System --> User: Validate NHIS Membership number and eligibility
+
+User -> System: Select payment method
+System --> User: Validate payment method
+User -> System: Enter wallet number
+System --> User: Validate wallet number
+User -> System: Enter pin code
+System --> User: Validate pin code
+User -> System: Confirm authorization
+System --> User: Validate authorization
+System --> PaymentGateway: Process payment
+PaymentGateway --> System: Payment status
+
+System --> User: Display transaction summary
+System --> User: Send SMS notifications
+System --> User: Generate new NHIS card
+System --> User: Send new NHIS card electronically
+@enduml

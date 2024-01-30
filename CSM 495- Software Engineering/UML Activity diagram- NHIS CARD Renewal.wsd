@@ -1,0 +1,45 @@
+@startuml
+start
+
+:Enter code to begin process;
+:Validate code;
+
+if (Code valid?) then (Yes)
+  :Display menu of transaction options;
+  :Select transaction option;
+  :Validate selected option;
+
+  if (Option = "Renew Membership") then (Yes)
+    :Display renew membership option;
+    :Select Ghana card type;
+    :Validate selected option;
+    :Enter NHIS Membership number;
+    :Validate NHIS Membership number;
+    :Confirm NHIS Membership number;
+    :Validate NHIS Membership number and eligibility;
+    :Request payment;
+    :Select payment method;
+    :Validate payment method;
+    :Enter wallet number;
+    :Validate wallet number;
+    :Enter pin code;
+    :Validate pin code;
+    :Confirm authorization;
+    :Validate authorization;
+    :Validate account balance;
+    :Process payment;
+    :Renew membership card;
+    :Generate new NHIS card;
+    :Send new NHIS card electronically;
+    :Display transaction summary;
+    :Send SMS notifications;
+  else (No)
+    :Handle other transaction options;
+  endif
+
+else (No)
+  :Display error message;
+endif
+
+stop
+@enduml
