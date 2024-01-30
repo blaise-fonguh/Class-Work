@@ -1,0 +1,62 @@
+@startuml
+class User {
+  - name: String
+  - NHISMembershipNumber: String
+  - GhanaCardType: String
+  - mobileWalletNumber: String
+  + enterCode()
+  + selectOption()
+  + enterNHISNumber()
+  + confirmNHISNumber()
+  + selectPaymentMethod()
+  + enterWalletNumber()
+  + enterPinCode()
+  + confirmAuthorization()
+  + viewTransactionSummary()
+}
+
+class MembershipCard {
+  - membershipNumber: String
+  - expiryDate: Date
+  - cardHolderName: String
+  - cardStatus: String
+  + renew()
+  + generateNewCard()
+  + sendCardElectronically()
+}
+
+class PaymentGateway {
+  - gatewayName: String
+  - transactionFee: double
+  + processPayment()
+  + validatePayment()
+}
+
+class Transaction {
+  - transactionID: String
+  - amount: double
+  - paymentMethod: String
+  - status: String
+  + generateTransactionSummary()
+  + sendSMSNotifications()
+}
+
+class System {
+  + validateCode()
+  + validateOption()
+  + validateNHISNumber()
+  + validateWalletNumber()
+  + validatePinCode()
+  + validateAuthorization()
+  + validateBalance()
+  + debitAccount()
+  + creditAccount()
+}
+
+User "1" -- "1" MembershipCard : has >
+User "1" -- "1" Transaction : initiates >
+Transaction "1" -- "1" PaymentGateway : uses >
+System "1" -- "*" User : manages >
+System "1" -- "*" MembershipCard : manages >
+System "1" -- "*" Transaction : manages >
+@enduml
