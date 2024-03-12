@@ -1,0 +1,63 @@
+@startuml
+
+actor User
+
+participant "Web App" as WebApp
+participant "Authentication Server" as AuthServer
+participant "Translation Service" as TranslationService
+participant "Speech Recognition Engine" as SpeechRecognition
+participant "Translation History Database" as TranslationDB
+
+User -> WebApp: Open web app
+activate WebApp
+
+User -> WebApp: Log in
+WebApp -> AuthServer: Send login request
+activate AuthServer
+AuthServer -> WebApp: Send login response
+deactivate AuthServer
+
+alt User agrees to Privacy Policy
+    WebApp -> WebApp: Encrypt User Data
+else User does not agree
+    WebApp -> User: Display Privacy Policy
+    WebApp -> User: Prompt to agree
+    User -> WebApp: Agree to Privacy Policy
+    WebApp -> WebApp: Encrypt User Data
+end
+
+User -> WebApp: Perform user activities
+
+opt Text Input
+    User -> WebApp: Enter text message
+    WebApp -> TranslationService: Translate text message
+    activate TranslationService
+    TranslationService --> WebApp: Translated text message
+    deactivate TranslationService
+end
+
+opt Voice Input
+    User -> WebApp: Record voice message
+    WebApp -> SpeechRecognition: Recognize speech
+    activate SpeechRecognition
+    SpeechRecognition --> WebApp: Transcribed text message
+    deactivate SpeechRecognition
+    WebApp -> TranslationService: Translate transcribed text
+    activate TranslationService
+    TranslationService --> WebApp: Translated voice message
+    deactivate TranslationService
+end
+
+User -> WebApp: View Translation History
+WebApp -> TranslationDB: Retrieve translation history
+activate TranslationDB
+TranslationDB --> WebApp: Translation history
+deactivate TranslationDB
+
+User -> WebApp: Log out
+WebApp -> WebApp: Clear session data
+WebApp -> User: Log out confirmation
+
+deactivate WebApp
+
+@enduml

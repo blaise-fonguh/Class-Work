@@ -1,0 +1,55 @@
+@startuml
+
+|User Authentication and Preferences|
+
+start
+:Display Privacy Policy;
+if (User agrees) then (yes)
+  :Encrypt User Data;
+endif
+:Log In;
+while (User is logged in) is (true)
+  :Perform user activities;
+endwhile
+:Log Out;
+stop
+
+|User Interface (UI)|
+
+start
+:Text Input;
+:Voice Input;
+:Language Selection;
+:Translation Display;
+:Playback Controls;
+:Search Chat;
+:Create Groups;
+:Select Multiple Chats;
+:Select Settings;
+:Choose Notifications;
+:Security (PIN or Password);
+:Media Auto-Download;
+:Check Help;
+stop
+
+|Speech Recognition|
+
+start
+:Background Noise Reduction;
+:Language Detection;
+stop
+
+|Translation Functionality|
+
+start
+:Text and Voice Translation;
+stop
+
+|Translation History|
+
+start
+:View Translation History;
+:Manage Translation History;
+stop
+
+@enduml

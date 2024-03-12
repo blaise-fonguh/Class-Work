@@ -1,0 +1,167 @@
+@startuml
+
+class User {
+    - username: String
+    - password: String
+    + login(username: String, password: String): boolean
+    + logout(): void
+}
+
+class System {
+    - privacyPolicy: PrivacyPolicy
+    - encryptionManager: DataEncryption
+    - authenticationManager: AuthenticationManager
+    - uiController: UIController
+    - chatManager: ChatManager
+    - settingsManager: SettingsManager
+    - notificationManager: NotificationManager
+    - securityManager: SecurityManager
+    - mediaManager: MediaAutoDownloadManager
+    - helpSection: HelpSection
+    - languageDetection: LanguageDetection
+    - translationService: TranslationService
+    - translationHistory: TranslationHistory
+}
+
+class PrivacyPolicy {
+    - content: String
+    - agreementStatus: boolean
+    + display(): void
+    + agree(): void
+}
+
+class DataEncryption {
+    + encrypt(data: Data): EncryptedData
+    + decrypt(encryptedData: EncryptedData): Data
+}
+
+class AuthenticationManager {
+    + login(username: String, password: String): boolean
+    + logout(): void
+    + authenticateUserWithSocialMedia(accountInfo: SocialMediaAccount): boolean
+}
+
+class UIController {
+    + displayMessage(message: String): void
+    + displaySettingsMenu(): void
+    + displayHelp(): void
+}
+
+class ChatManager {
+    + createGroupChat(users: List<User>): GroupChat
+    + searchChatHistory(keyword: String): List<ChatMessage>
+}
+
+class GroupChat {
+    - participants: List<User>
+    - messages: List<ChatMessage>
+    + addParticipant(user: User): void
+    + removeParticipant(user: User): void
+    + sendMessage(message: String): void
+}
+
+class SettingsManager {
+    + setSecurityOptions(options: SecurityOptions): void
+    + setNotificationPreferences(preferences: NotificationPreferences): void
+}
+
+class NotificationManager {
+    + customizeNotificationSettings(settings: NotificationSettings): void
+}
+
+class SecurityManager {
+    + setPIN(pin: String): void
+    + setPassword(password: String): void
+}
+
+class MediaAutoDownloadManager {
+    + enableAutoDownload(): void
+    + disableAutoDownload(): void
+}
+
+class HelpSection {
+    + displayFAQs(): void
+    + searchHelp(topic: String): void
+}
+
+class LanguageDetection {
+    + detectLanguage(input: String): Language
+}
+
+class TranslationService {
+    + translateText(text: String, sourceLanguage: Language, targetLanguage: Language): String
+    + translateVoiceNote(voiceNote: VoiceNote, sourceLanguage: Language, targetLanguage: Language): VoiceNote
+}
+
+class TranslationHistory {
+    - entries: List<TranslationEntry>
+    + addEntry(entry: TranslationEntry): void
+    + removeEntry(entry: TranslationEntry): void
+}
+
+class Language {
+    - code: String
+    - name: String
+}
+
+class TranslationEntry {
+    - sourceText: String
+    - translatedText: String
+}
+
+class ChatMessage {
+    - sender: User
+    - content: String
+}
+
+class Data {
+    - content: String
+}
+
+class EncryptedData {
+    - content: String
+}
+
+class SocialMediaAccount {
+    - accountId: String
+    - authToken: String
+}
+
+class NotificationPreferences {
+    - emailNotifications: boolean
+    - pushNotifications: boolean
+}
+
+class NotificationSettings {
+    - soundEnabled: boolean
+    - vibrationEnabled: boolean
+}
+
+User "1" -- "1" System
+System "1" -- "1" PrivacyPolicy
+System "1" -- "1" DataEncryption
+System "1" -- "1" AuthenticationManager
+System "1" -- "1" UIController
+System "1" -- "1" ChatManager
+System "1" -- "1" SettingsManager
+System "1" -- "1" NotificationManager
+System "1" -- "1" SecurityManager
+System "1" -- "1" MediaAutoDownloadManager
+System "1" -- "1" HelpSection
+System "1" -- "1" LanguageDetection
+System "1" -- "1" TranslationService
+System "1" -- "1" TranslationHistory
+SettingsManager "1" -- "1" SecurityManager
+SettingsManager "1" -- "1" NotificationManager
+ChatManager "0..*" -- "1" GroupChat
+GroupChat "0..*" -- "1..*" User
+TranslationHistory "0..*" -- "1..*" TranslationEntry
+TranslationService "0..*" -- "1..*" Language
+LanguageDetection "1" -- "1..*" Language
+TranslationService "1" -- "0..*" VoiceNote
+DataEncryption "0..*" -- "1" Data
+DataEncryption "0..*" -- "1" EncryptedData
+AuthenticationManager "0..*" -- "1" SocialMediaAccount
+NotificationManager "0..*" -- "1" NotificationSettings
+
+@enduml

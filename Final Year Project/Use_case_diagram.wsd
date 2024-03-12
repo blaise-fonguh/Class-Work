@@ -1,0 +1,67 @@
+@startuml
+
+left to right direction
+
+actor User as U
+
+rectangle "User Authentication and Preferences" {
+    usecase "Display Privacy Policy" as DisplayPrivacyPolicy
+    usecase "Encrypt User Data" as EncryptData
+    usecase "Log In" as LogIn
+    usecase "Log Out" as LogOut
+}
+
+rectangle "User Interface (UI)" {
+    usecase "Text Input" as TextInput
+    usecase "Voice Input" as VoiceInput
+    usecase "Language Selection" as LanguageSelection
+    usecase "Translation Display" as TranslationDisplay
+    usecase "Playback Controls" as PlaybackControls
+    usecase "Search Chat" as SearchChat
+    usecase "Create Groups" as CreateGroups
+    usecase "Select Multiple Chats" as SelectMultipleChats
+    usecase "Select Settings" as SelectSettings
+    usecase "Choose Notifications" as ChooseNotifications
+    usecase "Security (PIN or Password)" as Security
+    usecase "Media Auto-Download" as MediaAutoDownload
+    usecase "Check Help" as CheckHelp
+}
+
+rectangle "Speech Recognition" {
+    usecase "Background Noise Reduction" as NoiseReduction
+    usecase "Language Detection" as LanguageDetection
+}
+
+rectangle "Translation Functionality" {
+    usecase "Text and Voice Translation" as Translation
+}
+
+rectangle "Translation History" {
+    usecase "View Translation History" as ViewTranslationHistory
+    usecase "Manage Translation History" as ManageTranslationHistory
+}
+
+U -- DisplayPrivacyPolicy
+U -- EncryptData
+U -- LogIn
+U -- LogOut
+U -- TextInput
+U -- VoiceInput
+U -- LanguageSelection
+U -- TranslationDisplay
+U -- PlaybackControls
+U -- SearchChat
+U -- CreateGroups
+U -- SelectMultipleChats
+U -- SelectSettings
+U -- ChooseNotifications
+U -- Security
+U -- MediaAutoDownload
+U -- CheckHelp
+U -- NoiseReduction
+U -- LanguageDetection
+U -- Translation
+U -- ViewTranslationHistory
+U -- ManageTranslationHistory
+
+@enduml
